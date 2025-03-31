@@ -20,6 +20,8 @@
 # production
 /build
 
+/chrome-data
+
 # misc
 .DS_Store
 *.pem

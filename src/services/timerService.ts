@@ -1,5 +1,6 @@
 import cron from 'node-cron';
 import { getWeiboData, saveWeiboContent } from './weiboService';
+import { getPythonkeConcerts } from './pythonkeService';
 
 // 定义不同类型的定时任务
 export const startContentUpdateTimer = () => {
@@ -31,10 +32,28 @@ export const startWeiboSyncTimer = () => {
 };
 
 // 启动所有定时任务的函数
+export const startConcertSyncTimer = () => {
+  return cron.schedule('0 0 * * *', async () => { // 每天凌晨执行
+    console.log('执行演出信息同步任务');
+    try {
+      await getPythonkeConcerts();
+      console.log('演出信息同步完成');
+    } catch (error) {
+      console.error('演出信息同步失败:', error);
+    }
+  });
+};
+
 export const startAllTimers = () => {
   const contentTimer = startContentUpdateTimer();
   const bilibiliTimer = startBilibiliSyncTimer();
   const weiboTimer = startWeiboSyncTimer();
+  const concertTimer = startConcertSyncTimer();
+  
+  // 立即执行一次演出信息同步
+  getPythonkeConcerts().catch(error => {
+    console.error('初始演出信息同步失败:', error);
+  });
   
   return {
     contentTimer,
@@ -44,6 +63,7 @@ export const startAllTimers = () => {
       contentTimer.stop();
       bilibiliTimer.stop();
       weiboTimer.stop();
+      concertTimer.stop();
     }
   };
 };

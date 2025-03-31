@@ -11,8 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import tours from '../../../content/tours/index.json'
 
 interface TourDate {
   id: string;
@@ -27,14 +26,21 @@ interface TourDate {
   };
 }
 
+// 修改接口定义以匹配 JSON 数据结构
+interface TourInfo {
+  title: string;
+  time: string;
+  venue: string;
+  price: string;
+}
+
 export default async function TourPage({
   searchParams,
 }: {
   searchParams: { page?: string };
 }) {
   const page = Number(searchParams.page) || 1;
-  const pageSize = 3;
-  const tours = await getMdContent('tours');
+  const pageSize = 5;
   const totalPages = Math.ceil(tours.length / pageSize);
   const start = (page - 1) * pageSize;
   const end = start + pageSize;
@@ -73,47 +79,66 @@ export default async function TourPage({
         </div>
         
         <div className="space-y-6">
-          {currentTours.map((tour) => (
-            <Link href={`/tour/info/${tour.id}`} key={tour.id}>
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer mb-3">
-                <CardContent className="p-6">
-                  <div className="prose max-w-none dark:prose-invert">
-                    <ReactMarkdown>{tour.content}</ReactMarkdown>
+          {currentTours.map((tour, index) => (
+            <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer mb-3">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center">
+                  <div className="space-y-3">
+                    <h3 className="text-xl font-bold">{tour.title}</h3>
+                    <div className="space-y-1 text-gray-600">
+                      <p className="flex items-center gap-2">
+                        <span className="inline-block w-20 font-medium">演出时间：</span>
+                        {tour.time}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <span className="inline-block w-20 font-medium">演出场地：</span>
+                        {tour.venue}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <span className="inline-block w-20 font-medium">票价：</span>
+                        {tour.price}
+                      </p>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
+                  <button className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+                    购票
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
-        <div className="mt-6">
-          <Pagination>
-            <PaginationContent>
-              {page > 1 && (
-                <PaginationItem>
-                  <PaginationPrevious href={`/tour?page=${page - 1}`} />
-                </PaginationItem>
-              )}
-              
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-                <PaginationItem key={pageNumber}>
-                  <PaginationLink
-                    href={`/tour?page=${pageNumber}`}
-                    isActive={pageNumber === page}
-                  >
-                    {pageNumber}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              
-              {page < totalPages && (
-                <PaginationItem>
-                  <PaginationNext href={`/tour?page=${page + 1}`} />
-                </PaginationItem>
-              )}
-            </PaginationContent>
-          </Pagination>
-        </div>
+        {totalPages > 1 && (
+          <div className="mt-6">
+            <Pagination>
+              <PaginationContent>
+                {page > 1 && (
+                  <PaginationItem>
+                    <PaginationPrevious href={`/tour?page=${page - 1}`} />
+                  </PaginationItem>
+                )}
+                
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                  <PaginationItem key={pageNumber}>
+                    <PaginationLink
+                      href={`/tour?page=${pageNumber}`}
+                      isActive={pageNumber === page}
+                    >
+                      {pageNumber}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                
+                {page < totalPages && (
+                  <PaginationItem>
+                    <PaginationNext href={`/tour?page=${page + 1}`} />
+                  </PaginationItem>
+                )}
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </section>
 
       {/* 购票须知 */}

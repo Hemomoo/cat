@@ -1,4 +1,3 @@
-import schedule from 'node-schedule';
 import puppeteer from 'puppeteer';
 
 export const getBilibiliAudioData = async (url: string) => {
@@ -131,10 +130,3 @@ export const saveContent = async (
   }
 };
 
-// 添加定时任务
-// 替换 node-cron 为 node-schedule
-// export const scheduleMonthlyCheck = async () => {
-//   const job = schedule.scheduleJob('0 2 1 * *', async () => {
-//     // 你现有的定时任务逻辑
-//   });
-// };
