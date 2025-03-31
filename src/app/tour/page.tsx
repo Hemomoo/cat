@@ -39,7 +39,7 @@ export default async function TourPage({
 }: {
   searchParams: { page?: string };
 }) {
-  const page = Number(searchParams.page) || 1;
+  const page = Number(searchParams?.page) || 1;
   const pageSize = 5;
   const totalPages = Math.ceil(tours.length / pageSize);
   const start = (page - 1) * pageSize;

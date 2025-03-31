@@ -16,7 +16,7 @@ export default async function NewsPage({
 }: {
   searchParams: { page?: string };
 }) {
-  const page = Number(searchParams.page) || 1;
+  const page = Number(searchParams?.page) || 1;
   const pageSize = 6;
   const news = await getMdContent('news');
   const totalPages = Math.ceil(news.length / pageSize);
