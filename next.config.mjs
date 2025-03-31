@@ -1,16 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    turbo: {
-      rules: {
-        // 添加 Turbopack 规则
-        '**/*.{js,jsx,ts,tsx}': {
-          loader: 'next-babel-loader',
-        },
-      },
-    },
+    turbo: true,
+    serverActions: true,
   },
-  // ... 其他配置保持不变
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        path: false,
+        os: false,
+        crypto: false,
+      };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
